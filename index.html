@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+    <title>Auditorias</title>
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile.js"></script>
+</head>
+<body>
+	<!-- Login Section -->
+	<div data-role="page" id="p-login">
+		<div data-role="header">
+			<h3>Login</h3>
+		</div>
+		<div data-role="content">
+			<input type="text" placeholder="Username">
+			<input type="password" placeholder="Password">
+			<div data-role="button" data-icon="">
+				Login
+			</div>
+			<a href="#p-main">Main</a>
+			<a href="#p-audit">Audit view</a>
+			<a href="#p-history">History</a>
+		</div>
+	</div>
+	
+	<!-- Main view -->
+	<div data-role="page" id="p-main">
+		<div data-role="header">
+			<h3>Audits</h3>
+		</div>
+	</div>
+
+	<!-- Audit view -->
+	<div data-role="page" id="p-audit">
+		<div data-role="header">
+			<h3>Audit: #</h3>
+		</div>
+		<div data-role="content">
+
+			<input type="range" value="5" min="1" max="10">
+			<select name="flip-1" data-role="slider">
+		        <option value="good">Good</option>
+		        <option value="bad">Bad</option>
+	    	</select>
+		</div>
+	</div>
+
+	<!-- History view -->
+	<div data-role="page" id="p-history">
+		<div data-role="header">
+			<h3>History</h3>
+		</div>
+	</div>
+
+</body>
+</html>
