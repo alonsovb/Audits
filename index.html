@@ -12,7 +12,7 @@
 <body>
 
 	<!-- Login Section -->
-	<div data-role="page" id="p-login">
+	<div data-role="page" id="login">
 		<div data-role="header">
 			<h3>Login</h3>
 		</div>
@@ -20,59 +20,84 @@
 			<p>Enter a valid username and password to log in.</p>
 			<input type="text" placeholder="Username">
 			<input type="password" placeholder="Password">
-			<a href="#p-main" data-role="button" data-transition="pop">Login</a>
+			<a href="#main" data-role="button" data-transition="pop">Login</a>
 		</div>
 	</div>
 	
 	<!-- Main view -->
-	<div data-role="page" id="p-main">
+	<div data-role="page" id="main">
 		<div data-role="header">
 			<h3>Audits</h3>
 		</div>
 		<div data-role="content">
-			<a href="#p-history" data-role="button" data-transition="slide">History</a>
+			<a href="#history" data-role="button" data-transition="slide">History</a>
 			<div data-role="collapsible">
 				<h3>New audit</h3>
 				<div data-role="fieldcontain">
-					<label for="n-building">Input building</label>
+					<label for="n-building">Building</label>
 					<select id="n-building" name="n-building">
 					</select>
 				</div>
 				<div data-role="fieldcontain">
-					<label for="n-floor">Input floor</label>
+					<label for="n-floor">Floor</label>
 					<input type="number" id="n-floor" name="n-floor" value="1">
 				</div>
 				<div data-role="fieldcontain">
-					<label for="n-room">Input room</label>
+					<label for="n-room">Room</label>
 					<input type="text" id="n-room" name="n-room">
 				</div>
-				<input type="button" id="n-create" data-role="button" value="Create audit">
+				<a href="#audit" data-role="button" id="n-create" data-role="button">Create audit</a>
 			</div>
 		</div>
 	</div>
 
 	<!-- Audit view -->
-	<div data-role="page" id="p-audit">
+	<div data-role="page" id="audit">
 		<div data-role="header">
-			<h3>Audit: #</h3>
+			<h3>Audit</h3>
 		</div>
 		<div data-role="content">
-
-			<input type="range" value="5" min="1" max="10">
-			<select name="flip-1" data-role="slider">
-		        <option value="good">Good</option>
-		        <option value="bad">Bad</option>
-	    	</select>
+			<h3>Asset list</h3>
+			<div data-role="collapsible-set" id="asset-list">
+				<script id="asset-item-template" type="text/template">
+					<div data-role="collapsible" data-id="{{id}}">
+						<h3>{{id}}</h3>
+						<fieldset data-role="controlgroup">
+					    	<label for="asset-inroom-{{id}}">Asset in room</label>
+					    	<input type="checkbox" checked="" id="asset-inroom-{{id}}" name="asset-inroom-{{id}}">
+				    	</fieldset>
+				    	<div data-role="fieldcontain">
+					    	<label for="asset-score-{{id}}">Rating</label>
+							<input type="range" value="5" min="1" max="10" id="asset-score-{{id}}" name="asset-score-{{id}}">
+						</div>
+						<div data-role="fieldcontain">
+							<label for="asset-state-{{id}}">Asset state</label>
+							<select name="flip-1" data-role="slider" id="asset-state-{{id}}" name="asset-state-{{id}}">
+						        <option value="bad">Bad</option>
+						        <option value="good">Good</option>
+							</select>
+						</div>
+					</div>
+				</script>
+			</div>
+			<a href="#main" data-role="button">Complete</a>
+			<a href="#main" data-role="button">Save and quit</a>
+			<a href="#main" data-role="button">Delete</a>
 		</div>
 	</div>
 
+
+
 	<!-- History view -->
-	<div data-role="page" id="p-history">
+	<div data-role="page" id="history">
 		<div data-role="header">
 			<h3>History</h3>
 		</div>
 		<div data-role="content">
-			<a href="#p-main" data-role="button" data-transition="fade">Back to main</a>
+			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c">
+
+			</ul>
+			<a href="#main" data-role="button" data-transition="fade">Back to main</a>
 		</div>
 	</div>
 
