@@ -9,10 +9,11 @@ var audits = [],
 
 // Audit class. Contains a building, floor and room properties.
 function Audit(building, floor, room) {
-	this.building = building;
-	this.floor = floor;
-	this.room = room;
-	this.assets = [];
+	this.building  = building;
+	this.floor     = floor;
+	this.room      = room;
+	this.assets    = [];
+	this.date      = new Date();
 	this.completed = false;
 }
 Audit.prototype.addAsset = function (asset) {
@@ -21,9 +22,10 @@ Audit.prototype.addAsset = function (asset) {
 
 // Asset class. Each asset has an identifier, a qualitative (state) and quantified score.
 function Asset(id, state, score) {
-	this.id = id;
-	this.state = state;
-	this.score = score;
+	this.id      = id;
+	this.state   = state;
+	this.score   = score;
+	this.comment = '';
 }
 
 
@@ -57,10 +59,17 @@ $(function() {
 			// Clean adding inputs
 			$floor.val(1);
 			$room.val('');
+			$('#n-panel').trigger('collapse');
 		});
 	});
 
 	$('#audit').on('pageshow', function() {
+		// Check if there's a current audit. If not, go to main screen.
+		if (currentAudit === undefined) {
+			window.location.href = '#main';
+			return;
+		}
+
 		var template = $.trim($('#asset-item-template').html()),
 			content  = '',
 			$assetList = $('#asset-list');
