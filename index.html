@@ -4,7 +4,9 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width" />
     <title>Auditorias</title>
+    <link rel="icon" type="image/png" href="images/audit-icon.png">
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css">
+    <link rel="stylesheet" type="text/css" href="css/fixes.css">
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery.mobile.js"></script>
     <script type="text/javascript" src="js/audits.js"></script>
@@ -13,10 +15,10 @@
 
 	<!-- Login Section -->
 	<div data-role="page" id="login">
-		<div data-role="header">
-			<h3>Login</h3>
-		</div>
 		<div data-role="content">
+			<div id="logo-wrapper">
+				<img src="images/audit-logo.png" id="l-logo">
+			</div>
 			<p>Enter a valid username and password to log in.</p>
 			<input type="text" placeholder="Username">
 			<input type="password" placeholder="Password">
@@ -30,24 +32,32 @@
 			<h3>Audits</h3>
 		</div>
 		<div data-role="content">
-			<a href="#history" data-role="button" data-transition="slide">History</a>
+			<p>You can see the list of current and past audits from the History view.</p>
+			<a href="#history" data-role="button" data-transition="fade">View history</a>
+			<p>To create a new audit, click on the next button to fill up the new audit's info.</p>
+			<a href="#create"  data-role="button" data-rel="dialog" data-transition="pop">New audit</a>
 			<div data-role="collapsible" id="n-panel">
-				<h3>New audit</h3>
-				<div data-role="fieldcontain">
-					<label for="n-building">Building</label>
-					<select id="n-building" name="n-building">
-					</select>
-				</div>
-				<div data-role="fieldcontain">
-					<label for="n-floor">Floor</label>
-					<input type="number" id="n-floor" name="n-floor" value="1">
-				</div>
-				<div data-role="fieldcontain">
-					<label for="n-room">Room</label>
-					<input type="text" id="n-room" name="n-room">
-				</div>
-				<a href="#audit" data-role="button" id="n-create" data-role="button">Create audit</a>
 			</div>
+		</div>
+	</div>
+	<!-- Page for new audit (shown as dialog) -->
+	<div data-role="page" id="create">
+		<div data-role="header">
+			<h3>New audit</h3>
+		</div>
+		<div data-role="content">
+			<p>Enter the headquarter, building name, the floor and the room name to create a new audit.</p>
+			<fieldset data-role="controlgroup" data-type="vertical">
+				<select id="n-headquarter" name="n-headquarter">
+				</select>
+				<select id="n-building" name="n-building" disabled="disabled">
+					<option>Building</option>
+				</select>
+				<select id="n-room" name="n-room" disabled="disabled">
+					<option>Room</option>
+				</select>
+			</fieldset>
+			<a href="#audit" data-role="button" id="n-create" data-role="button" disabled="disabled">Create audit</a>
 		</div>
 	</div>
 
@@ -58,11 +68,12 @@
 		</div>
 		<div data-role="content">
 			<h3>Asset list</h3>
+			<p>This is the list of assets contained within this audit.</p>
 			<div data-role="collapsible-set" id="asset-list">
 			</div>
 			<script id="asset-item-template" type="text/template">
 				<div data-role="collapsible" data-id="{{id}}">
-					<h3>{{id}}</h3>
+					<h3>Asset #{{id}}</h3>
 					<fieldset data-role="controlgroup">
 				    	<label for="asset-inroom-{{id}}">Asset in room</label>
 				    	<input type="checkbox" checked="" id="asset-inroom-{{id}}" name="asset-inroom-{{id}}">
@@ -80,13 +91,11 @@
 					</div>
 				</div>
 			</script>
-			<a href="#main" data-role="button">Complete</a>
-			<a href="#main" data-role="button">Save and quit</a>
-			<a href="#main" data-role="button">Delete</a>
+			<a href="#history" data-role="button" id="n-complete">Complete</a>
+			<a href="#history" data-role="button" id="n-save">Save and quit</a>
+			<a href="#history" data-role="button" id="n-delete">Delete</a>
 		</div>
 	</div>
-
-
 
 	<!-- History view -->
 	<div data-role="page" id="history">
@@ -94,9 +103,12 @@
 			<h3>History</h3>
 		</div>
 		<div data-role="content">
-			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c">
-
+			<p>This is the list of current and past </p>
+			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c" data-divider-theme="d">
 			</ul>
+			<script id="history-list-divider" type="text/template">
+				<li data-role="list-divider" id="{{id}}">{{text}}</li>
+			</script>
 			<a href="#main" data-role="button" data-transition="fade">Back to main</a>
 		</div>
 	</div>
