@@ -8,49 +8,106 @@ var audits = [],
 	hqs = [{
 	name: 'Sede San Carlos',
 	buildings: [{
-		name: 'Administrativo',
+		name: 'Administrative',
 		rooms: [{
-			name: "Oficina 1",
+			name: "Reception",
+			floor: 2
+		}, {
+			name: "Director's Office",
+			floor: 2
+		}, {
+			name: "Tech Support",
+			floor: 1
+		}, {
+			name: "FundaTec",
+			floor: 1
+		}, {
+			name: "Administration Dept.",
+			floor: 2
+		}]
+	}, {
+		name: 'Dinning Hall',
+		rooms: [{
+			name: "Cooking",
+			floor: 1
+		}, {
+			name: "Dinning Hall",
+			floor: 1
+		}, {
+			name: "Soda",
 			floor: 1
 		}]
 	}, {
-		name: 'Comedor',
+		name: 'Classrooms and Departments',
 		rooms: [{
-			name: "Oficina 1",
-			floor: 1
-		}]
-	}, {
-		name: 'Escuela Computación',
-		rooms: [{
-			name: "Oficina 1",
+			name: "Compupter Engineering Dept.",
+			floor: 2
+		}, {
+			name: "Classroom 3",
+			floor: 2
+		}, {
+			name: "Classroom 4",
+			floor: 2
+		}, {
+			name: "Classroom 5",
+			floor: 2
+		}, {
+			name: "Classroom 6",
+			floor: 2
+		}, {
+			name: "Classroom 7",
+			floor: 2
+		}, {
+			name: "Classroom 8",
+			floor: 2
+		}, {
+			name: "Classroom 9",
+			floor: 2
+		}, {
+			name: "Classroom 10",
+			floor: 2
+		}, {
+			name: "Science and letters Dept.",
+			floor: 2
+		}, {
+			name: "Agronomy's lab",
 			floor: 1
 		}]
 	}]
 	}, {
 		name: 'Sede Central',
 		buildings: [{
-			name: 'Comedor',
+			name: 'Dinning Hall',
 			rooms: [{
-				name: "Oficina 1",
+				name: "Cooking",
 				floor: 1
 			}]
 		},
 		{
-			name: 'Administrativo',
+			name: 'Administrative',
 			rooms: [{
 				name: 'Reception',
 				floor: 1
 			}, {
-				name: 'Gerencia',
+				name: 'Gerency',
 				floor: 2
 			}]
 		}]
 	}, {
 		name: 'Sede San José',
 		buildings: [{
-			name: 'Edificio 1',
+			name: 'Architecture Dept.',
 			rooms: [{
-				name: "Oficina 1",
+				name: "Meeting Room",
+				floor: 1
+			}]
+		}, {
+			name: 'Administrative',
+			rooms: [{
+				name: "Director's Office",
+				floor: 1
+			}, {
+				name: "Reception",
 				floor: 1
 			}]
 		}]
@@ -271,6 +328,11 @@ $(function() {
 			window.location.href = '#main';
 			return;
 		}
+
+		$('#audit-info').text(
+				currentAudit.hq.name + ', ' +
+				currentAudit.building.name + ', ' +
+				currentAudit.room.name);
 
 		var template = $.trim($('#asset-item-template').html()),
 			content  = '',

@@ -42,7 +42,7 @@
 	
 	<!-- Main view -->
 	<div data-role="page" id="main">
-		<div data-role="header">
+		<div data-role="header" data-theme="b">
 			<h3>Audits</h3>
 		</div>
 		<div data-role="content">
@@ -58,7 +58,7 @@
 	</div>
 	<!-- Page for new audit (shown as dialog) -->
 	<div data-role="page" id="create">
-		<div data-role="header">
+		<div data-role="header" data-theme="b">
 			<h3>New audit</h3>
 		</div>
 		<div data-role="content">
@@ -80,16 +80,17 @@
 
 	<!-- Audit view -->
 	<div data-role="page" id="audit">
-		<div data-role="header">
+		<div data-role="header" data-theme="b">
 			<h3>Audit</h3>
 		</div>
 		<div data-role="content">
-			<h3>Asset list</h3>
+			<h3 id="audit-info"></h3>
+			<h4>Asset list</h4>
 			<p>This is the list of assets contained within this audit.</p>
 			<div data-role="collapsible-set" id="asset-list">
 			</div>
 			<script id="asset-item-template" type="text/html">
-				<div data-role="collapsible" data-id="{{id}}" class="asset-container">
+				<div data-role="collapsible" data-id="{{id}}" class="asset-container" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 					<h3>Asset #{{id}}</h3>
 					<fieldset data-role="controlgroup">
 				    	<label for="asset-inroom-{{id}}">Asset in room</label>
@@ -124,13 +125,13 @@
 
 	<!-- History view -->
 	<div data-role="page" id="history">
-		<div data-role="header">
+		<div data-role="header" data-theme="b">
 			<h3>History</h3>
 		</div>
 		<div data-role="content">
 			<p>This is the list of current and past </p>
 			<p id="mobile-gesture-guide"/>
-			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c" data-divider-theme="d" data-filter="true" data-filter-placeholder="Search audits..." class="touch" data-split-icon="delete" data-split-theme="d">
+			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="d" data-divider-theme="e" data-filter="true" data-filter-placeholder="Search audits..." class="touch" data-split-icon="delete" data-split-theme="d">
 			</ul>
 			<script id="history-list-divider" type="text/template">
 				<li data-role="list-divider" id="{{id}}">{{text}}</li>
