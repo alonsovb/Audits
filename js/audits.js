@@ -378,7 +378,9 @@ $(function() {
 		// Show list of audits
 		for (var index in audits) {
 			var audit = audits[index],
-				item = $('<li>'),
+				item = $('<li>', {
+					class: 'audit-li'
+				}),
 				link = $('<a>', {
 					href: "#audit",
 					class: 'audit',
@@ -414,7 +416,8 @@ $(function() {
 			link.append(date);
 			link.append(span);
 			item.append(link);
-			item.append(dButton);
+			if ( ! $.mobile.support.touch )
+				item.append(dButton);
 
 			// Add to corresponding divider
 			if (audits[index].completed)
@@ -435,13 +438,29 @@ $(function() {
 			// Remove the class that is used to hide the delete button on touch devices
 			$( "#list" ).removeClass( "touch" );
 			// Click delete split-button to remove list item
-			// $( ".delete" ).on( "click", function() {
-			// var listitem = $( this ).parent( "li.ui-li" );
-			// confirmAndDelete( listitem );
-			// });
+			$( ".delete" ).on( "click", function() {
+				var listitem = $( this ).closest( "li.audit-li" );
+				confirmRemoveAudit( listitem );
+			});
+		} else {
+			$('#mobile-gesture-guide').text('Swipe left or right any audit in the list to remove it.');
 		}
-		$list.on('swipeleft swiperight', 'li', function (e) {
-			alert(e.type);
+		$list.on('swipeleft swiperight', 'li.audit-li', function (e) {
+			confirmRemoveAudit($(this));
 		});
 	});
+
+	function confirmRemoveAudit(li) {
+		var answer = confirm('Do you really want to remove this audit?');
+		if ( answer ) {
+			// Remove from data
+			var auditIndex = parseInt(li.children('a.audit').data('index'), 10);
+			audits.splice(auditIndex, 1);
+			currentAudit = undefined;
+
+			// Remove list item
+			li.remove();
+			$list.listview('refresh');
+		}
+	}
 });

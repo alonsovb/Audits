@@ -48,9 +48,9 @@
 		<div data-role="content">
 			<div class="content-box">
 				<p>You can see the list of current and past audits from the History view.</p>
-				<a href="#history" data-role="button" data-transition="fade">View history</a>
+				<a href="#history" data-role="button" data-transition="fade" data-icon="grid">View history</a>
 				<p>To create a new audit, click on the next button to fill up the new audit's info.</p>
-				<a href="#create"  data-role="button" data-rel="dialog" data-transition="pop">New audit</a>
+				<a href="#create"  data-role="button" data-rel="dialog" data-transition="pop" data-icon="edit">New audit</a>
 				<div data-role="collapsible" id="n-panel">
 				</div>
 			</div>
@@ -74,7 +74,7 @@
 					<option>Room</option>
 				</select>
 			</fieldset>
-			<button href="#audit" data-role="button" id="n-create" data-role="button" disabled="disabled">Create audit</button>
+			<button href="#audit" data-role="button" id="n-create" data-role="button" disabled="disabled" data-icon="check">Create audit</button>
 		</div>
 	</div>
 
@@ -115,9 +115,9 @@
 			<label for="audit-comment">Leave a comment for this audit</label>
 			<textarea name="audit-comment" id="audit-comment"></textarea>
 			<div id="audit-complete-action" data-role="controlgroup" data-type="horizontal" data-mini="true">
-				<a href="#history" data-role="button" id="n-complete">Complete</a>
-				<a href="#history" data-role="button" id="n-save">Save and quit</a>
-				<a href="#history" data-role="button" id="n-delete">Delete</a>
+				<a href="#history" data-role="button" id="n-complete" data-icon="check">Complete</a>
+				<a href="#history" data-role="button" id="n-save"     data-icon="back">Save and return</a>
+				<a href="#history" data-role="button" id="n-delete"   data-icon="alert">Delete</a>
 			</div>
 		</div>
 	</div>
@@ -129,14 +129,13 @@
 		</div>
 		<div data-role="content">
 			<p>This is the list of current and past </p>
+			<p id="mobile-gesture-guide"/>
 			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c" data-divider-theme="d" data-filter="true" data-filter-placeholder="Search audits..." class="touch" data-split-icon="delete" data-split-theme="d">
 			</ul>
-			<script id="history-list-divider" type="text/html">
-			<!-- Script for templating -->
 			<script id="history-list-divider" type="text/template">
 				<li data-role="list-divider" id="{{id}}">{{text}}</li>
 			</script>
-			<a href="#main" data-role="button" data-transition="fade" data-mini="true">Back to main</a>
+			<a href="#main" data-role="button" data-transition="fade" data-mini="true" data-icon="home">Back to main</a>
 		</div>
 	</div>
 </body>
