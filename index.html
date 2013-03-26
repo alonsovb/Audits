@@ -9,7 +9,19 @@
     <link rel="stylesheet" type="text/css" href="css/fixes.css">
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery.mobile.js"></script>
+    <script type="text/javascript" src="js/moment.js"></script>
     <script type="text/javascript" src="js/audits.js"></script>
+    <style type="text/css" media="screen and (min-width: 768px)">
+		.content-box {
+			margin: 0 auto;
+		}
+		#login .content-box {
+			width: 400px;
+		}
+		#main .content-box {
+			width: 800px;
+		}
+    </style>
 </head>
 <body>
 
@@ -19,10 +31,12 @@
 			<div id="logo-wrapper">
 				<img src="images/audit-logo.png" id="l-logo">
 			</div>
-			<p>Enter a valid username and password to log in.</p>
-			<input type="text" placeholder="Username">
-			<input type="password" placeholder="Password">
-			<a href="#main" data-role="button" data-transition="pop">Login</a>
+			<div class="content-box">
+				<p>Enter a valid username and password to log in.</p>
+				<input type="text" placeholder="Username">
+				<input type="password" placeholder="Password">
+				<a href="#main" data-role="button" data-transition="pop">Login</a>
+			</div>
 		</div>
 	</div>
 	
@@ -32,11 +46,13 @@
 			<h3>Audits</h3>
 		</div>
 		<div data-role="content">
-			<p>You can see the list of current and past audits from the History view.</p>
-			<a href="#history" data-role="button" data-transition="fade">View history</a>
-			<p>To create a new audit, click on the next button to fill up the new audit's info.</p>
-			<a href="#create"  data-role="button" data-rel="dialog" data-transition="pop">New audit</a>
-			<div data-role="collapsible" id="n-panel">
+			<div class="content-box">
+				<p>You can see the list of current and past audits from the History view.</p>
+				<a href="#history" data-role="button" data-transition="fade">View history</a>
+				<p>To create a new audit, click on the next button to fill up the new audit's info.</p>
+				<a href="#create"  data-role="button" data-rel="dialog" data-transition="pop">New audit</a>
+				<div data-role="collapsible" id="n-panel">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -49,6 +65,7 @@
 			<p>Enter the headquarter, building name, the floor and the room name to create a new audit.</p>
 			<fieldset data-role="controlgroup" data-type="vertical">
 				<select id="n-headquarter" name="n-headquarter">
+					<option>Select headquarter</option>
 				</select>
 				<select id="n-building" name="n-building" disabled="disabled">
 					<option>Building</option>
@@ -57,7 +74,7 @@
 					<option>Room</option>
 				</select>
 			</fieldset>
-			<a href="#audit" data-role="button" id="n-create" data-role="button" disabled="disabled">Create audit</a>
+			<button href="#audit" data-role="button" id="n-create" data-role="button" disabled="disabled">Create audit</button>
 		</div>
 	</div>
 
@@ -71,29 +88,37 @@
 			<p>This is the list of assets contained within this audit.</p>
 			<div data-role="collapsible-set" id="asset-list">
 			</div>
-			<script id="asset-item-template" type="text/template">
-				<div data-role="collapsible" data-id="{{id}}">
+			<script id="asset-item-template" type="text/html">
+				<div data-role="collapsible" data-id="{{id}}" class="asset-container">
 					<h3>Asset #{{id}}</h3>
 					<fieldset data-role="controlgroup">
 				    	<label for="asset-inroom-{{id}}">Asset in room</label>
-				    	<input type="checkbox" checked="" id="asset-inroom-{{id}}" name="asset-inroom-{{id}}">
+				    	<input type="checkbox" checked="" id="asset-inroom-{{id}}" name="asset-inroom-{{id}}" class="inroom">
 			    	</fieldset>
 			    	<div data-role="fieldcontain">
 				    	<label for="asset-score-{{id}}">Rating</label>
-						<input type="range" value="5" min="1" max="10" id="asset-score-{{id}}" name="asset-score-{{id}}">
+						<input type="range" value="{{score}}" min="1" max="10" id="asset-score-{{id}}" name="asset-score-{{id}}" class="score">
 					</div>
 					<div data-role="fieldcontain">
 						<label for="asset-state-{{id}}">Asset state</label>
-						<select name="flip-1" data-role="slider" id="asset-state-{{id}}" name="asset-state-{{id}}">
-					        <option value="bad">Bad</option>
-					        <option value="good">Good</option>
+						<select name="flip-1" data-role="slider" id="asset-state-{{id}}" name="asset-state-{{id}}" class="state">
+					        <option value="0">Bad</option>
+					        <option value="1">Good</option>
 						</select>
+					</div>
+					<div data-role="fieldcontain">
+						<label for="asset-comment-{{id}}">Leave a comment about this asset</label>
+						<input type="text" name="asset-comment-{{id}}" id="asset-comment-{{id}}" placeholder="Comment" class="comment"/>
 					</div>
 				</div>
 			</script>
-			<a href="#history" data-role="button" id="n-complete">Complete</a>
-			<a href="#history" data-role="button" id="n-save">Save and quit</a>
-			<a href="#history" data-role="button" id="n-delete">Delete</a>
+			<label for="audit-comment">Leave a comment for this audit</label>
+			<textarea name="audit-comment" id="audit-comment"></textarea>
+			<div id="audit-complete-action" data-role="controlgroup" data-type="horizontal" data-mini="true">
+				<a href="#history" data-role="button" id="n-complete">Complete</a>
+				<a href="#history" data-role="button" id="n-save">Save and quit</a>
+				<a href="#history" data-role="button" id="n-delete">Delete</a>
+			</div>
 		</div>
 	</div>
 
@@ -104,14 +129,13 @@
 		</div>
 		<div data-role="content">
 			<p>This is the list of current and past </p>
-			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c" data-divider-theme="d">
+			<ul data-role="listview" data-inset="true" id="h-list" data-count-theme="c" data-divider-theme="d" data-filter="true" data-filter-placeholder="Search audits..." class="touch" data-split-icon="delete" data-split-theme="d">
 			</ul>
-			<script id="history-list-divider" type="text/template">
+			<script id="history-list-divider" type="text/html">
 				<li data-role="list-divider" id="{{id}}">{{text}}</li>
 			</script>
-			<a href="#main" data-role="button" data-transition="fade">Back to main</a>
+			<a href="#main" data-role="button" data-transition="fade" data-mini="true">Back to main</a>
 		</div>
 	</div>
-
 </body>
 </html>

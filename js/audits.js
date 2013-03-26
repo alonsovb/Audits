@@ -4,82 +4,136 @@
 
 // Global variables
 var audits = [],
-	currentAudit;
-	// headquarters = ['Central (Cartago)', 'San Carlos', 'San José'],
-	// buildings = ['Administrative (Agro, Admin, Production)', 'Computer Eng., Sciences', 'Computer Lab', 'LAIMI', 'Dinning Hall'];
-
-var hqs = [{
+	currentAudit,
+	hqs = [{
 	name: 'Sede San Carlos',
 	buildings: [{
 		name: 'Administrativo',
-		rooms: []
+		rooms: [{
+			name: "Oficina 1",
+			floor: 1
+		}]
 	}, {
 		name: 'Comedor',
-		rooms: []
+		rooms: [{
+			name: "Oficina 1",
+			floor: 1
+		}]
 	}, {
 		name: 'Escuela Computación',
-		rooms: []
-	}]
-}, {
-	name: 'Sede Central',
-	buildings: [{
-		name: 'Comedor',
-		rooms: []
-	},
-	{
-		name: 'Administrativo',
 		rooms: [{
-			name: 'Reception',
-			floor: 3
-		}, {
-			name: 'Gerencia',
-			floor: 3
+			name: "Oficina 1",
+			floor: 1
 		}]
 	}]
-}, {
-	name: 'Sede San José',
-	buildings: []
-}];
+	}, {
+		name: 'Sede Central',
+		buildings: [{
+			name: 'Comedor',
+			rooms: [{
+				name: "Oficina 1",
+				floor: 1
+			}]
+		},
+		{
+			name: 'Administrativo',
+			rooms: [{
+				name: 'Reception',
+				floor: 1
+			}, {
+				name: 'Gerencia',
+				floor: 2
+			}]
+		}]
+	}, {
+		name: 'Sede San José',
+		buildings: [{
+			name: 'Edificio 1',
+			rooms: [{
+				name: "Oficina 1",
+				floor: 1
+			}]
+		}]
+	}],
+	// Assets Identifiers start at number 40200
+	assetsId = 40200;
 
 // Give some audit samples
-// audits = sampleAudits(10, 3, 10);
+audits = sampleAudits(10, 3, 10);
 
 // Audit class. Contains a building, floor and room properties.
-function Audit(building, floor, room, hqs) {
-	this.hqs       = hqs;
+function Audit(headquarter, building, room) {
+	this.date      = moment();
+	this.hq        = headquarter;
 	this.building  = building;
-	this.floor     = floor;
 	this.room      = room;
 	this.assets    = [];
-	this.date      = new Date();
+	this.comment   = '';
 	this.completed = false;
 }
 
 // Asset class. Each asset has an identifier, a qualitative (state) and quantified score.
-function Asset(id, state, score) {
-	this.id      = id;
+function Asset(state, score) {
+	this.id      = assetsId++;
+	this.present = true;
 	this.state   = state;
 	this.score   = score;
 	this.comment = '';
+}
+
+function getAuditById(id, audit) {
+	var assets = audit.assets;
+	for (var index in assets) {
+		if (assets[index].id === id) {
+			return assets[index];
+		}
+	}
+}
+
+function getAverageScore(audit) {
+	var count = audit.assets.length;
+	if (!audit.assets || count === 0) {
+		return 0;
+	}
+	var result = 0;
+	for (var i in audit.assets) {
+		result += audit.assets[i].score;
+	}
+	return result / count;
+}
+
+function countGood(audit) {
+	var count = audit.assets.length;
+	if (!audit.assets || count === 0) {
+		return 0;
+	}
+	var result = 0;
+	for (var i in audit.assets) {
+		if (audit.assets[i].state === 1)
+			result++;
+	}
+	return result;
 }
 
 // Returns some sample assets
 function sampleAssets(min, max) {
 	var assetCount = Math.floor((Math.random()*(max - min))+min),
 		assets = [];
-	for (var i = 0; i < assetCount; i++)
-		assets.push(new Asset(Math.floor((Math.random()*9000)+1000), 1, 10));
+	for (var i = 0; i < assetCount; i++) {
+		var state = Math.floor(Math.random() * 10);
+		assets.push(new Asset((state < 5 ? 0 : 1), state));
+	}
 	return assets;
 }
 // Returns some sample audits (each one with some sample assets)
-function sampleAudits(count, min, max) {
+function sampleAudits(count, minAssets, maxAssets) {
 	var audits = [];
 	for (var i = 0; i < count; i++) {
-		var newAudit = new Audit(buildings[Math.floor(Math.random()*buildings.length)],
-						headquarters[Math.floor(Math.random()*headquarters.length)],
-						Math.floor((Math.random()*2)+1),
-						Math.floor((Math.random()*2)+1));
-		newAudit.assets = sampleAssets(min, max);
+		var hq = hqs         [Math.floor(Math.random() * hqs.length)],
+			bl = hq.buildings[Math.floor(Math.random() * hq.buildings.length)],
+			rm = bl.rooms    [Math.floor(Math.random() * bl.rooms.length)],
+			newAudit = new Audit(hq, bl, rm);
+		newAudit.assets = sampleAssets(minAssets, maxAssets);
 		if (Math.random() > 0.2)
 			newAudit.completed = true;
 		audits.push(newAudit);
@@ -109,12 +163,20 @@ $(function() {
 			$headquarter.append(newHQ);
 		}
 
+		// Load building list on HQ change
 		$headquarter.on('change', function () {
-			selHQ = hqs[this.selectedIndex];
+			if (this.selectedIndex < 0) {
+				return;
+			}
+			selHQ = hqs[this.selectedIndex - 1];
 			var buildings = selHQ.buildings;
 
 			if (buildings.length > 0) {
 				$building.html('');
+				$building.append($('<option>', {
+					text: 'Building'
+				}));
+
 				// Load building list
 				for (var index in buildings) {
 					var newOption = $('<option>', {
@@ -122,19 +184,25 @@ $(function() {
 					});
 					$building.append(newOption);
 				}
-				$('select').selectmenu('refresh');
+				$building.selectmenu('refresh');
 				$building.selectmenu('enable');
+
 			} else {
 				$building.selectmenu('disable');
+				$room.selectmenu('disable');
 			}
+			$room.selectmenu('disable');
 		});
 
 		$building.on('change', function() {
-			selBuild = selHQ.buildings[this.selectedIndex];
+			selBuild = selHQ.buildings[this.selectedIndex - 1];
 			var rooms = selBuild.rooms;
 
 			if (rooms.length > 0) {
 				$room.html('');
+				$room.append($('<option>', {
+					text: 'Room'
+				}));
 
 				// Load room list
 				var floors = [$('<optgroup>', {
@@ -152,27 +220,32 @@ $(function() {
 							}));
 						}
 					}
-					floors[parseInt(room.floor) - 1].append(newOption);
+					floors[parseInt(room.floor, 10) - 1].append(newOption);
 				}
-				for (var i in floors) {
-					$room.append(floors[i]);
+				for (var floorIndex in floors) {
+					$room.append(floors[floorIndex]);
 				}
+				$room.selectmenu('refresh');
 				$room.selectmenu('enable');
+
 			} else {
 				$room.selectmenu('disable');
 			}
 		});
 
 		$room.on('change', function () {
-			selRoom = selBuild.rooms[this.selectedIndex];
+			selRoom = selBuild.rooms[this.selectedIndex - 1];
+			if (selRoom !== undefined && selRoom !== null)
+				$('#n-create').button('enable');
+			else
+				$('#n-create').button('disable');
 		});
 
 		// Create new audit
 		$('#n-create').on('click', function() {
-			var $hqs      = $headquarter,
-				$building = $building,
-				$room     = $room,
-				newAudit = new Audit($hqs.val(), $building.val(), $floor.val(), $room.val());
+			var newAudit;
+
+			newAudit  = new Audit(selHQ, selBuild, selRoom);
 
 			// Create some sample assets
 			newAudit.assets = sampleAssets(5, 12);
@@ -182,14 +255,16 @@ $(function() {
 			currentAudit = newAudit;
 
 			// Clean adding inputs
-			$floor.val(1);
-			$room.val('');
+			$building.selectmenu('disable');
+			$room.selectmenu('disable');
+			$('#n-create').button('disable');
 			$('#n-panel').trigger('collapse');
+			window.location.href = '#audit';
 		});
 	});
 
 	// Events on audit page
-	$('#audit').on('pageshow', function() {
+	$('#audit').on('pagebeforeshow', function() {
 
 		// Check if there's a current audit. If not, go to main screen.
 		if (currentAudit === undefined) {
@@ -199,23 +274,95 @@ $(function() {
 
 		var template = $.trim($('#asset-item-template').html()),
 			content  = '',
-			$assetList = $('#asset-list');
+			$assetList = $('#asset-list'),
+			$comment = $('#audit-comment');
 
 		// Clean asset list
 		$assetList.html('');
 
 		// Fill asset list by templating
 		$.each(currentAudit.assets, function (index, obj) {
-			content += template.replace( /{{id}}/ig, obj.id );
+			var text = template.replace( /{{id}}/ig, obj.id );
+				text = text.replace(/{{score}}/ig, obj.score);
+			content += text;
 		});
 		$assetList.append(content);
+		$comment.val(currentAudit.comment);
+
+		var $assets = $('#asset-list>div');
+		$assets.each(function (index, element) {
+			var $this = $(this),
+				$state = $this.find('select.state'),
+				$comment = $this.find('input.comment');
+			$state.val(currentAudit.assets[index].state);
+			$comment.val(currentAudit.assets[index].comment);
+		});
+
+		// Disable controls when viewing completed audits
+		if (currentAudit.completed) {
+			$comment.attr('disabled', 'disabled');
+			$assetList.find('select, input').attr('disabled', 'disabled');
+			$('a#n-save').hide();
+			$("#n-complete .ui-btn-text").text('Return');
+		} else {
+			$comment.removeAttr('disabled');
+			$assetList.find('select, input').removeAttr('disabled');
+			$('a#n-save').show();
+			$("#n-complete .ui-btn-text").text('Complete');
+		}
+
 		$('#audit').trigger('create');
 
-		$()
-	})
+		// Audit view events
+		$('.inroom').on('change', function () {
+			var $this = $(this),
+				id = $this.closest('.asset-container').data('id'),
+				asset = getAuditById(id, currentAudit);
+			asset.present = this.checked;
+		});
+		$('.score').on('change', function () {
+			var $this = $(this),
+				id = $this.closest('.asset-container').data('id'),
+				asset = getAuditById(id, currentAudit);
+			asset.score = parseInt($this.val(), 10);
+		});
+		$('.state').on('change', function () {
+			var $this = $(this),
+				id = $this.closest('.asset-container').data('id'),
+				asset = getAuditById(id, currentAudit);
+			asset.state = $this.val();
+		});
+		$('.comment').on('change', function () {
+			var $this = $(this),
+				id = $this.closest('.asset-container').data('id'),
+				asset = getAuditById(id, currentAudit);
+			asset.comment = $this.val();
+		});
+
+		$('#n-complete').on('click', function () {
+			currentAudit.completed = true;
+		});
+		$('#n-save').on('click', function () {
+			var comment  = $comment.val();
+			currentAudit.comment = comment;
+		});
+		$('#n-delete').on('click', function (e) {
+			if (currentAudit === undefined)
+				return;
+			var confirmDelete = confirm('Do you really want to delete the current audit?');
+			if (confirmDelete) {
+				var index = audits.indexOf(currentAudit);
+				audits.splice(index, 1);
+				currentAudit = undefined;
+			} else {
+				e.preventDefault();
+				return;
+			}
+		});
+	});
 
 	// Events on history page
-	$('#history').on('pageshow', function() {
+	$('#history').on('pagebeforeshow', function() {
 		var $list = $('#h-list'),
 			$divider = $.trim($('#history-list-divider').html());
 
@@ -230,32 +377,71 @@ $(function() {
 
 		// Show list of audits
 		for (var index in audits) {
-			var item = $('<li>'),
+			var audit = audits[index],
+				item = $('<li>'),
 				link = $('<a>', {
-						href: "#audit",
-						class: 'audit',
-						text: audits[index].building + '. Floor: ' +
-							audits[index].floor + '. Room: ' + audits[index].room,
-						'data-index': index
-					}),
+					href: "#audit",
+					class: 'audit',
+					'data-index': index
+				}),
 				span = $('<span>', {
-							class: 'ui-li-count',
-							text: audits[index].assets.length
-						});
+					class: 'ui-li-count',
+					text: audits[index].assets.length
+				}),
+				title = $('<h2>', {
+					text: audit.room.name
+				}),
+				direction = $('<p>').append($('<strong>', {
+					text: audit.hq.name + ', ' + audit.building.name
+				})),
+				description = $('<p>', {
+					text: 'Total assets: ' + audit.assets.length +
+						'. Average score: ' + getAverageScore(audit).toFixed(2) +
+						'. Assets in good state: ' + countGood(audit)
+				}),
+				date = $('<p>', {
+					text: audit.date.format('MMM Do, h:mm a'),
+					class: "ui-li-aside"
+				}),
+				dButton = $('<a>', {
+					text: 'Delete',
+					class: 'delete'
+				});
+			// Append properties to item
+			link.append(title);
+			link.append(direction);
+			link.append(description);
+			link.append(date);
 			link.append(span);
 			item.append(link);
+			item.append(dButton);
+
 			// Add to corresponding divider
 			if (audits[index].completed)
 				$done.after(item);
 			else
 				$current.after(item);
 		}
+		// Refresh the list view to mirror changes
 		$list.listview('refresh');
 
 		// Load selected audit on click
 		$('a.audit').on('click', function () {
 			var index = $(this).data('index');
 			currentAudit = audits[index];
+		});
+
+		if ( ! $.mobile.support.touch ) {
+			// Remove the class that is used to hide the delete button on touch devices
+			$( "#list" ).removeClass( "touch" );
+			// Click delete split-button to remove list item
+			// $( ".delete" ).on( "click", function() {
+			// var listitem = $( this ).parent( "li.ui-li" );
+			// confirmAndDelete( listitem );
+			// });
+		}
+		$list.on('swipeleft swiperight', 'li', function (e) {
+			alert(e.type);
 		});
 	});
 });
