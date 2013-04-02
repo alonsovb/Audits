@@ -177,7 +177,7 @@ function sampleAssets(min, max) {
 	var assetCount = Math.floor((Math.random()*(max - min))+min),
 		assets = [];
 	for (var i = 0; i < assetCount; i++) {
-		var state = Math.floor(Math.random() * 10);
+		var state = Math.floor(Math.random() * 10 + 1);
 		assets.push(new Asset((state < 5 ? 0 : 1), state));
 	}
 	return assets;
@@ -346,6 +346,8 @@ $(function() {
 		$.each(currentAudit.assets, function (index, obj) {
 			var text = template.replace( /{{id}}/ig, obj.id );
 				text = text.replace(/{{score}}/ig, obj.score);
+			if (!obj.present)
+				text = text.replace('checked="true"', '');
 			content += text;
 		});
 		$assetList.append(content);
