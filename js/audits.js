@@ -514,9 +514,8 @@ $(function() {
 		$list.on('swipeleft swiperight', 'li.audit-li', function (e) {
 			confirmRemoveAudit($(this));
 		});
-	});
 
-	function confirmRemoveAudit(li) {
+		function confirmRemoveAudit(li) {
 		var answer = confirm('Do you really want to remove this audit?');
 		if ( answer ) {
 			// Remove from data
@@ -529,4 +528,5 @@ $(function() {
 			$list.listview('refresh');
 		}
 	}
+	});
 });
