@@ -404,6 +404,8 @@ $(function() {
 		});
 
 		$('#n-complete').on('click', function () {
+			var comment  = $comment.val();
+			currentAudit.comment = comment;
 			currentAudit.completed = true;
 		});
 		$('#n-save').on('click', function () {
